@@ -30,7 +30,7 @@ begin
     if not IsDigit(ch) then
     begin
       writeln('Введенный текст НЕ совпадает с частью последовательности 0123456789.');
-      exit();
+      exit;
     end;
 
     // Определение начальной цифры последовательности
@@ -49,12 +49,11 @@ begin
       end;
     end;
 
-    // Определяем следующую ожидаемую цифру в последовательности 0123456789
-    if expectedDigit = '9' then
-      expectedDigit := '0'
-    else
-      expectedDigit := chr(ord(expectedDigit) + 1);
-
+    if ord(expectedDigit) > ord('9') then begin
+        writeln('Введенный текст НЕ совпадает с частью последовательности .');
+      exit;
+     end;
+         expectedDigit := chr(ord(expectedDigit) + 1);
   end; // продолжаем, пока не введена точка
 
   if isMatch then
