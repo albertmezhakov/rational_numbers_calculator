@@ -13,8 +13,8 @@ var
   sign: ParserHelper.sign_type;
   number_system, status, pointer, finish_status: Integer;
   numerator_first_num, comment: Boolean;
-  numerator, numerator_temp: longint;
-  denominator, denominator_temp: longword;
+  numerator: longint;
+  denominator, numerator_temp, denominator_temp: longword;
 
 begin
   status := 0;
@@ -32,7 +32,7 @@ begin
     Read(input);
     status := ExecuteCommand(input, numerator_first_num, sign, comment,
                               number_system, pointer, status, command,
-                              numerator_temp, denominator_temp);
+                              numerator_temp, numerator, denominator_temp, denominator);
     status := CheckFihish(input, status, finish_status);
     if CheckHaveComment(input, comment) then continue;
 

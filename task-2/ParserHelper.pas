@@ -18,7 +18,8 @@ type
 
   function ExecuteCommand(input: char; var numerator_first_num: Boolean; var sign: sign_type; var comment: Boolean;
                              var number_system, pointer, status: Integer; var command: command_type;
-                             var numerator_temp: LongInt; var denominator_temp: LongWord): Integer;
+                             var numerator_temp: LongWord; var numerator: LongInt; var denominator_temp: LongWord;
+                             var denominator: LongWord): Integer;
 
   function CheckHaveComment(input: char; var comment: Boolean): Boolean;
 
@@ -100,7 +101,8 @@ end;
 
 function ExecuteCommand(input: char; var numerator_first_num: Boolean; var sign: sign_type; var comment: Boolean;
                            var number_system, pointer, status: Integer; var command: command_type;
-                           var numerator_temp: LongInt; var denominator_temp: LongWord): Integer;
+                           var numerator_temp: LongWord; var numerator: LongInt; var denominator_temp: LongWord;
+                           var denominator: LongWord): Integer;
 
 begin
   if (ord(input) = 13) or (ord(input) = 10) then
@@ -131,8 +133,28 @@ begin
     WriteLn('СС: ', number_system);
     WriteLn('Знак: ', sign);
     WriteLn('Финальный статус: ', status);
-    WriteLn('Числитель: ', numerator_temp);
-    WriteLn('Знаменатель: ', denominator_temp);
+    WriteLn('Числитель(input): ', numerator_temp);
+    WriteLn('Знаменатель(input): ', denominator_temp);
+    WriteLn('Числитель: ', numerator);
+    WriteLn('Знаменатель: ', denominator);
+    if command = 3 then
+    begin
+      numerator := numerator * numerator_temp;
+      denominator := denominator * denominator_temp;
+      if sign = 1 then numerator := numerator * -1;
+    end;
+    if command = 4 then
+    begin
+      numerator := numerator * denominator_temp;
+      denominator := denominator * numerator_temp;
+      if sign = 1 then numerator := numerator * -1;
+    end;
+
+    if denominator = 0 then
+    begin
+      WriteLn('division_by_zero');
+      Halt;
+    end;
 
     status := 0;
     command := 0;
