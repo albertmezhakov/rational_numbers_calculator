@@ -23,6 +23,8 @@ begin
   sign := 0;
   pointer := 1;
   numerator_first_num := true;
+  numerator := 0;
+  denominator := 1;
   numerator_temp := 0;
   denominator_temp := 0;
   finish_status := 0;

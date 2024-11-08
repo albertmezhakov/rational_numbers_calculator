@@ -14,6 +14,15 @@ type
   buffer_aray = array[1..2] of Char;
 
   sign_type = 0..1;
+  function IsMultiplicationWithinLongIntLimits(a: longint; b: longword): boolean;
+
+  function IsMultiplicationWithinLongWordLimits(a, b: longword): boolean;
+
+  function IsWithinLongIntLimits(numerator: longint; number_system: integer; num: integer): boolean;
+
+  function IsWithinLongWordLimits(denominator: longword; number_system: integer; num: integer): boolean;
+
+
   function CheckFihish(input: char; var status: Integer; var finish_status: Integer): Integer;
 
   function ExecuteCommand(input: char; var numerator_first_num: Boolean; var sign: sign_type; var comment: Boolean;
@@ -48,9 +57,91 @@ type
   function InputNumbersDenominator(input: char; var input_buffer: buffer_aray; var denominator: LongWord;
                                       var number_system, pointer: Integer): Integer;
 
+
 implementation
 
 uses SysUtils;
+
+
+function IsMultiplicationWithinLongIntLimits(a: longint; b: longword): boolean;
+const
+  MIN_LONGINT = -2147483648;
+  MAX_LONGINT = 2147483647;
+begin
+  // ≈сли одно из чисел равно нулю, то переполнени€ не будет
+  if (a = 0) or (b = 0) then
+    Exit(true);
+
+  // ≈сли `a` положительный, провер€ем, чтобы результат не превышал MAX_LONGINT
+  if a > 0 then
+    Exit(a <= MAX_LONGINT div longint(b));
+
+  // ≈сли `a` отрицательный, провер€ем, чтобы результат не был меньше MIN_LONGINT
+  if a < 0 then
+    Exit(a >= MIN_LONGINT div longint(b));
+
+  // ≈сли все проверки пройдены, переполнени€ нет
+  IsMultiplicationWithinLongIntLimits := true;
+end;
+
+function IsMultiplicationWithinLongWordLimits(a, b: longword): boolean;
+const
+  MAX_LONGWORD = 4294967295;
+begin
+  // ≈сли одно из чисел равно нулю, то переполнени€ не будет
+  if (a = 0) or (b = 0) then
+    Exit(true);
+
+  // ѕровер€ем, чтобы результат умножени€ не превышал MAX_LONGWORD
+  if a > MAX_LONGWORD div b then
+    Exit(false);
+
+  // ≈сли проверка пройдена, переполнени€ нет
+  IsMultiplicationWithinLongWordLimits := true;
+end;
+
+function IsWithinLongIntLimits(numerator: longint; number_system: integer; num: integer): boolean;
+const
+  MIN_LONGINT = -2147483648;
+  MAX_LONGINT = 2147483647;
+begin
+  // ѕроверка переполнени€ при умножении
+  if (numerator > 0) and (numerator > MAX_LONGINT div number_system) then
+    exit(false)
+  else if (numerator < 0) and (numerator < MIN_LONGINT div number_system) then
+    exit(false);
+
+  // ≈сли произведение в пределах, можно выполнить умножение
+  numerator := numerator * number_system;
+
+  // ѕроверка переполнени€ при сложении
+  if (num > 0) and (numerator > MAX_LONGINT - num) then
+    exit(false)
+  else if (num < 0) and (numerator < MIN_LONGINT - num) then
+    exit(false);
+
+  // ≈сли все проверки прошли, то переполнени€ не будет
+  IsWithinLongIntLimits := true;
+end;
+
+function IsWithinLongWordLimits(denominator: longword; number_system: integer; num: integer): boolean;
+const
+  MAX_LONGWORD = 4294967295;
+begin
+  // ѕроверка переполнени€ при умножении
+  if (number_system > 0) and (denominator > MAX_LONGWORD div number_system) then
+    exit(false);
+
+  // ≈сли произведение в пределах, можно выполнить умножение
+  denominator := denominator * number_system;
+
+  // ѕроверка переполнени€ при сложении
+  if (num > 0) and (denominator > MAX_LONGWORD - num) then
+    exit(false);
+
+  // ≈сли все проверки прошли, то переполнени€ не будет
+  IsWithinLongWordLimits := true;
+end;
 
 function CheckFihish(input: char; var status: Integer; var finish_status: Integer): Integer;
 begin
@@ -98,7 +189,6 @@ begin
   end;
 end;
 
-
 function ExecuteCommand(input: char; var numerator_first_num: Boolean; var sign: sign_type; var comment: Boolean;
                            var number_system, pointer, status: Integer; var command: command_type;
                            var numerator_temp: LongWord; var numerator: LongInt; var denominator_temp: LongWord;
@@ -139,12 +229,33 @@ begin
     WriteLn('«наменатель: ', denominator);
     if command = 3 then
     begin
+      if not IsMultiplicationWithinLongIntLimits(numerator, numerator_temp) then
+      begin
+        WriteLn('limit_numerator_multiplication');
+        Halt;
+      end;
+      if not IsMultiplicationWithinLongWordLimits(denominator, denominator_temp) then
+      begin
+        WriteLn('limit_denominator_multiplication');
+        Halt;
+      end;
       numerator := numerator * numerator_temp;
       denominator := denominator * denominator_temp;
       if sign = 1 then numerator := numerator * -1;
     end;
     if command = 4 then
     begin
+      if not IsMultiplicationWithinLongIntLimits(numerator, denominator_temp) then
+      begin
+        WriteLn('limit_numerator_division');
+        Halt;
+      end;
+      if not IsMultiplicationWithinLongWordLimits(denominator, numerator_temp) then
+      begin
+        WriteLn('limit_denominator_division');
+        Halt;
+      end;
+
       numerator := numerator * denominator_temp;
       denominator := denominator * numerator_temp;
       if sign = 1 then numerator := numerator * -1;
@@ -348,6 +459,11 @@ begin
 
   if (pointer = 3) then
   begin
+    if not IsWithinLongIntLimits(numerator, number_system, CovertNumberToInteger(input_buffer, number_system)) then
+    begin
+      WriteLn('limit_longint');
+      Halt;
+    end;
     numerator := numerator * number_system + CovertNumberToInteger(input_buffer, number_system);
     pointer := 1;
   end;
@@ -407,12 +523,16 @@ begin
 
   if (pointer = 3) then
   begin
+    if not IsWithinLongWordLimits(denominator, number_system, CovertNumberToInteger(input_buffer, number_system)) then
+    begin
+      WriteLn('limit_longint');
+      Halt;
+    end;
     denominator := denominator * number_system + CovertNumberToInteger(input_buffer, number_system);
     pointer := 1;
   end;
   InputNumbersDenominator := 7;
 end;
-
 
 end.
 
