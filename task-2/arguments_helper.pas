@@ -1,27 +1,26 @@
 (*
  * Project: RationalNumbersCalculator
- * Date: 26.10.2024
+ * Date: 08.11.2024
  * User: BerhtAdal
  * Email: berhtadal@gmail.com
  * Telegram: https://t.me/BerhtAdal
  *)
-program main;
-uses  SysUtils;
+unit arguments_helper;
 
-const
-  MAX_NUMBER_SYSTEM = 256;  // Максимальное количество поддерживаемых систем счисления
+interface
 
-type
-  number_system_type = array[1..256] of Int16;  // Тип данных для хранения массивов систем счисления (до 256 уникальных значений)
+uses custom_types, sysutils;
 
-var
-  number_systems: number_system_type;  // Массив, в котором будут храниться переданные пользователем системы счисления
+  function GetNumberSystems(): custom_types.number_system_t;
+
+implementation
 
 
-procedure GetNumberSystems(var number_system_local: number_system_type);
+function GetNumberSystems(): custom_types.number_system_t;
 var
   i, j: integer;  // Переменные для итерации по циклам
   in_array: Boolean;  // Флаг для проверки, была ли уже добавлена система счисления
+  number_system_local: custom_types.number_system_t;
 {
     Процедура для получения и обработки систем счисления из аргументов командной строки
 }
@@ -55,7 +54,7 @@ begin
     else
     begin
       WriteLn('Некорректная система счисления. Поддерживаются системы счисления от 2 до 256 включительно.');
-      exit;  // Завершаем программу, если введена некорректная система счисления
+      Halt;  // Завершаем программу, если введена некорректная система счисления
     end;
   end;
 
@@ -63,10 +62,8 @@ begin
   if ParamCount = 0 then
   begin
     WriteLn('Нужно ввести минимум 1 систему счисления.');
-    exit;  // Завершаем программу
+    Halt;  // Завершаем программу
   end;
+  GetNumberSystems := number_system_local;
 end;
-
-begin
-  GetNumberSystems(number_systems);
 end.

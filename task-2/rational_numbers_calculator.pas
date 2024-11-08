@@ -5,7 +5,7 @@
  * Email: berhtadal@gmail.com
  * Telegram: https://t.me/BerhtAdal
  *)
-program parser_commads;
+program rational_numbers_calculator;
 uses execute_helper, custom_types, parser_helper;
 
 var
