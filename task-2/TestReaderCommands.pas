@@ -12,7 +12,7 @@ var
   command: ParserHelper.command_type;
   sign: ParserHelper.sign_type;
   number_system, status, pointer, finish_status: Integer;
-  numerator_first_num, comment: Boolean;
+  numerator_first_num, denominator_first_num,comment: Boolean;
   numerator: longint;
   denominator, numerator_temp, denominator_temp: longword;
 
@@ -23,10 +23,11 @@ begin
   sign := 0;
   pointer := 1;
   numerator_first_num := true;
+  denominator_first_num := true;
   numerator := 0;
   denominator := 1;
   numerator_temp := 0;
-  denominator_temp := 0;
+  denominator_temp := 1;
   finish_status := 0;
   comment := false;
   while true do
@@ -49,7 +50,7 @@ begin
       4: status := InputSpaceAfterColomn(input);
       5: status := InputSignOrFirstNumbersNumerator(input, sign, numerator_first_num, input_buffer, numerator_temp, number_system, pointer);
       6: status := InputNumbersNumerator(input, numerator_first_num, input_buffer, numerator_temp, number_system, pointer);
-      7: status := InputNumbersDenominator(input, input_buffer, denominator_temp, number_system, pointer);
+      7: status := InputNumbersDenominator(input, input_buffer, denominator_temp,denominator_first_num, number_system, pointer);
     end;
 
 

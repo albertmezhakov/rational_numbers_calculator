@@ -14,6 +14,10 @@ type
   buffer_aray = array[1..2] of Char;
 
   sign_type = 0..1;
+  function GCD(a, b: longword): longword;
+
+  function LCM(a, b: longword): longword;
+
   function IsMultiplicationWithinLongIntLimits(a: longint; b: longword): boolean;
 
   function IsMultiplicationWithinLongWordLimits(a, b: longword): boolean;
@@ -21,6 +25,12 @@ type
   function IsWithinLongIntLimits(numerator: longint; number_system: integer; num: integer): boolean;
 
   function IsWithinLongWordLimits(denominator: longword; number_system: integer; num: integer): boolean;
+
+  function IsAdditionWithinLongIntLimits(a: longint; b: longword): boolean;
+
+  function IsSubtractionWithinLongIntLimits(a: longint; b: longword): boolean;
+
+  procedure ReduceFraction(var num: longint; var den: longword);
 
 
   function CheckFihish(input: char; var status: Integer; var finish_status: Integer): Integer;
@@ -54,14 +64,36 @@ type
                                                var input_buffer: buffer_aray; var numerator: LongWord;
                                                var number_system, pointer: Integer): Integer;
 
-  function InputNumbersDenominator(input: char; var input_buffer: buffer_aray; var denominator: LongWord;
-                                      var number_system, pointer: Integer): Integer;
+  function InputNumbersDenominator(input: char; var input_buffer: buffer_aray; var denominator: LongWord; var denominator_first_num: Boolean; var number_system, pointer: Integer): Integer;
 
 
 implementation
 
 uses SysUtils;
 
+function GCD(a, b: longword): longword;
+begin
+  // Алгоритм Евклида для нахождения наибольшего общего делителя (НОД)
+  while b <> 0 do
+  begin
+    a := a mod b;
+    a := a + b;
+    b := a - b;
+    a := a - b;
+  end;
+  GCD := a;
+end;
+
+function LCM(a, b: longword): longword;
+begin
+  // Наименьшее общее кратное через НОД с проверкой на переполнение
+  if a > 4294967295 div b then
+  begin
+    WriteLn('Переполнение при вычислении НОК');
+    Halt;
+  end;
+  LCM := (a div GCD(a, b)) * b;
+end;
 
 function IsMultiplicationWithinLongIntLimits(a: longint; b: longword): boolean;
 const
@@ -143,6 +175,66 @@ begin
   IsWithinLongWordLimits := true;
 end;
 
+function IsAdditionWithinLongIntLimits(a: longint; b: longword): boolean;
+const
+  MIN_LONGINT = -2147483648;
+  MAX_LONGINT = 2147483647;
+begin
+  // Если b = 0, переполнение не может произойти
+  if b = 0 then
+    Exit(true);
+
+  // Если a положительное, проверяем, чтобы результат не превысил MAX_LONGINT
+  if a > 0 then
+    Exit(a + b <= MAX_LONGINT);
+
+  // Если a отрицательное, проверяем, чтобы результат не опустился ниже MIN_LONGINT
+  if a < 0 then
+    Exit(a + b >= MIN_LONGINT);
+
+  // Если a = 0, переполнение не может произойти, так как b не выходит за пределы longint
+  IsAdditionWithinLongIntLimits := true;
+end;
+
+function IsSubtractionWithinLongIntLimits(a: longint; b: longword): boolean;
+const
+  MIN_LONGINT = -2147483648;
+  MAX_LONGINT = 2147483647;
+begin
+  // Если b = 0, переполнение не может произойти
+  if b = 0 then
+    Exit(true);
+
+  // Если a положительное, проверяем, чтобы результат не стал меньше MIN_LONGINT
+  if a > 0 then
+    Exit(a - b >= MIN_LONGINT);
+
+  // Если a отрицательное, проверяем, чтобы результат не стал больше MAX_LONGINT
+  if a < 0 then
+    Exit(a - b <= MAX_LONGINT);
+
+  // Если a = 0, переполнение не может произойти, так как b не выходит за пределы longint
+  IsSubtractionWithinLongIntLimits := true;
+end;
+
+procedure ReduceFraction(var num: longint; var den: longword);
+var
+  gcd_result: longword;
+begin
+  // Находим НОД числителя и знаменателя
+  gcd_result := GCD(abs(num), den);
+
+  // Обработка возможного знака
+  if num < 0 then
+  begin
+    num := (abs(num) div gcd_result) * -1;
+    den := den div gcd_result;
+  end else begin
+    num := abs(num) div gcd_result;
+    den := den div gcd_result;
+  end;
+end;
+
 function CheckFihish(input: char; var status: Integer; var finish_status: Integer): Integer;
 begin
   if (status = 0) or (status = -1) then
@@ -193,7 +285,8 @@ function ExecuteCommand(input: char; var numerator_first_num: Boolean; var sign:
                            var number_system, pointer, status: Integer; var command: command_type;
                            var numerator_temp: LongWord; var numerator: LongInt; var denominator_temp: LongWord;
                            var denominator: LongWord): Integer;
-
+var
+  commonDen: longword;
 begin
   if (ord(input) = 13) or (ord(input) = 10) then
   begin
@@ -227,6 +320,13 @@ begin
     WriteLn('Знаменатель(input): ', denominator_temp);
     WriteLn('Числитель: ', numerator);
     WriteLn('Знаменатель: ', denominator);
+
+//    if (denominator_temp = 0) and (command <> 4) then // ??????
+    if denominator_temp = 0 then
+    begin
+      WriteLn('division_by_zero_1');
+      Halt;
+    end;
     if command = 3 then
     begin
       if not IsMultiplicationWithinLongIntLimits(numerator, numerator_temp) then
@@ -260,13 +360,78 @@ begin
       denominator := denominator * numerator_temp;
       if sign = 1 then numerator := numerator * -1;
     end;
+    if ((command = 1) and (sign = 0)) or ((command = 2) and (sign = 1))then
+    begin
+      // Находим общий знаменатель с проверкой переполнения
+      commonDen := LCM(denominator, denominator_temp);
 
+      // Приводим первую дробь к общему знаменателю с проверкой переполнения
+      if not IsMultiplicationWithinLongIntLimits(numerator, commonDen div denominator) then
+      begin
+        WriteLn('Переполнение при приведении первой дроби к общему знаменателю');
+        Halt;
+      end;
+
+      numerator := numerator * (commonDen div denominator);
+      denominator := commonDen;
+
+      if not IsMultiplicationWithinLongWordLimits(numerator_temp, commonDen div denominator_temp) then
+      begin
+        WriteLn('Переполнение при приведении второй дроби к общему знаменателю');
+        Halt;
+      end;
+      numerator_temp := numerator_temp * (commonDen div denominator_temp);
+      denominator_temp := commonDen;
+
+      if not IsAdditionWithinLongIntLimits(numerator, numerator_temp) then
+      begin
+        WriteLn('Переполнение при cложение');
+        Halt;
+      end;
+      numerator := numerator + numerator_temp;
+    end;
+    if ((command = 2) and (sign = 0)) or ((command = 1) and (sign = 1))then
+    begin
+      // Находим общий знаменатель с проверкой переполнения
+      commonDen := LCM(denominator, denominator_temp);
+
+      // Приводим первую дробь к общему знаменателю с проверкой переполнения
+      if not IsMultiplicationWithinLongIntLimits(numerator, commonDen div denominator) then
+      begin
+        WriteLn('Переполнение при приведении первой дроби к общему знаменателю');
+        Halt;
+      end;
+
+      numerator := numerator * (commonDen div denominator);
+      denominator := commonDen;
+
+      if not IsMultiplicationWithinLongWordLimits(numerator_temp, commonDen div denominator_temp) then
+      begin
+        WriteLn('Переполнение при приведении второй дроби к общему знаменателю');
+        Halt;
+      end;
+      numerator_temp := numerator_temp * (commonDen div denominator_temp);
+      denominator_temp := commonDen;
+
+      if not IsSubtractionWithinLongIntLimits(numerator, numerator_temp) then
+      begin
+        WriteLn('Переполнение при вычитании');
+        Halt;
+      end;
+      numerator := numerator - numerator_temp;
+    end;
     if denominator = 0 then
     begin
       WriteLn('division_by_zero');
       Halt;
     end;
 
+
+    WriteLn('Числитель(after1): ', numerator);
+    WriteLn('Знаменатель(after1): ', denominator);
+    ReduceFraction(numerator, denominator);
+    WriteLn('Числитель(after2): ', numerator);
+    WriteLn('Знаменатель(after2): ', denominator);
     status := 0;
     command := 0;
     number_system := 0;
@@ -274,7 +439,7 @@ begin
     pointer := 1;
     numerator_first_num := true;
     numerator_temp := 0;
-    denominator_temp := 0;
+    denominator_temp := 1;
     comment := false;
     exit(-3);
   end;
@@ -502,8 +667,9 @@ begin
   end;
 end;
 
-function  InputNumbersDenominator(input: char; var input_buffer: buffer_aray; var denominator: LongWord; var number_system, pointer: Integer): Integer;
+function  InputNumbersDenominator(input: char; var input_buffer: buffer_aray; var denominator: LongWord; var denominator_first_num: Boolean; var number_system, pointer: Integer): Integer;
 begin
+
   if (pointer = 2) and (input = ' ') then
   begin
     WriteLn('unexpected_whitespace_in_number(denominator)');
@@ -528,6 +694,9 @@ begin
       WriteLn('limit_longint');
       Halt;
     end;
+    if denominator_first_num then
+      denominator := 0;
+    denominator_first_num := false;
     denominator := denominator * number_system + CovertNumberToInteger(input_buffer, number_system);
     pointer := 1;
   end;
