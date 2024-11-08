@@ -56,7 +56,7 @@ begin
       number_system_local[i] := StrToInt(ParamStr(i))  // Добавляем систему счисления в массив
     else
     begin
-      WriteLn('Некорректная система счисления. Поддерживаются системы счисления от 2 до 256 включительно.');
+      WriteLn('incorrect_number_system_range(system_argument)');
       Halt;  // Завершаем программу, если введена некорректная система счисления
     end;
   end;
@@ -64,7 +64,7 @@ begin
   // Если не было передано ни одного аргумента, выводим сообщение об ошибке
   if ParamCount = 0 then
   begin
-    WriteLn('Нужно ввести минимум 1 систему счисления.');
+    WriteLn('missing_number_system_argument');
     Halt;  // Завершаем программу
   end;
   GetNumberSystems := number_system_local;

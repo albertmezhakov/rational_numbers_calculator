@@ -94,17 +94,7 @@ begin
       WriteLn('incorect_number(denominator)');
       Halt;
     end;
-
-    // Debug
-//    WriteLn('Correct');
-//    WriteLn('Команда: ', command);
-//    WriteLn('СС: ', number_system);
-//    WriteLn('Знак: ', sign);
-//    WriteLn('Финальный статус: ', status);
-//    WriteLn('Числитель(input): ', numerator_temp);
-//    WriteLn('Знаменатель(input): ', denominator_temp);
-//    WriteLn('Числитель: ', numerator);
-//    WriteLn('Знаменатель: ', denominator);
+    
 
     // Проверка деления на ноль
     if denominator_temp = 0 then
@@ -118,12 +108,12 @@ begin
     begin
       if not IsMultiplicationWithinLongIntLimits(numerator, numerator_temp) then
       begin
-        WriteLn('limit_numerator_multiplication');
+        WriteLn('multiplication_overflow_in_longint');
         Halt;
       end;
       if not IsMultiplicationWithinLongWordLimits(denominator, denominator_temp) then
       begin
-        WriteLn('limit_denominator_multiplication');
+        WriteLn('multiplication_overflow_in_longword');
         Halt;
       end;
       numerator := numerator * numerator_temp;
@@ -136,12 +126,12 @@ begin
     begin
       if not IsMultiplicationWithinLongIntLimits(numerator, denominator_temp) then
       begin
-        WriteLn('limit_numerator_division');
+        WriteLn('multiplication_overflow_in_longint');
         Halt;
       end;
       if not IsMultiplicationWithinLongWordLimits(denominator, numerator_temp) then
       begin
-        WriteLn('limit_denominator_division');
+        WriteLn('multiplication_overflow_in_longword');
         Halt;
       end;
 
@@ -159,7 +149,7 @@ begin
       // Приводим первую дробь к общему знаменателю с проверкой переполнения
       if not IsMultiplicationWithinLongIntLimits(numerator, commonDen div denominator) then
       begin
-        WriteLn('Переполнение при приведении первой дроби к общему знаменателю');
+        WriteLn('multiplication_overflow_in_longint');
         Halt;
       end;
 
@@ -169,7 +159,7 @@ begin
       // Приводим вторую дробь к общему знаменателю
       if not IsMultiplicationWithinLongWordLimits(numerator_temp, commonDen div denominator_temp) then
       begin
-        WriteLn('Переполнение при приведении второй дроби к общему знаменателю');
+        WriteLn('multiplication_overflow_in_longword');
         Halt;
       end;
       numerator_temp := numerator_temp * (commonDen div denominator_temp);
@@ -178,7 +168,7 @@ begin
       // Проверка переполнения при сложении
       if not IsAdditionWithinLongIntLimits(numerator, numerator_temp) then
       begin
-        WriteLn('Переполнение при сложении');
+        WriteLn('addition_overflow_in_longint');
         Halt;
       end;
       numerator := numerator + numerator_temp;
@@ -193,7 +183,7 @@ begin
       // Приводим первую дробь к общему знаменателю с проверкой переполнения
       if not IsMultiplicationWithinLongIntLimits(numerator, commonDen div denominator) then
       begin
-        WriteLn('Переполнение при приведении первой дроби к общему знаменателю');
+        WriteLn('multiplication_overflow_in_longint');
         Halt;
       end;
 
@@ -203,7 +193,7 @@ begin
       // Приводим вторую дробь к общему знаменателю
       if not IsMultiplicationWithinLongWordLimits(numerator_temp, commonDen div denominator_temp) then
       begin
-        WriteLn('Переполнение при приведении второй дроби к общему знаменателю');
+        WriteLn('multiplication_overflow_in_longword');
         Halt;
       end;
       numerator_temp := numerator_temp * (commonDen div denominator_temp);
@@ -212,7 +202,7 @@ begin
       // Проверка переполнения при вычитании
       if not IsSubtractionWithinLongIntLimits(numerator, numerator_temp) then
       begin
-        WriteLn('Переполнение при вычитании');
+        WriteLn('subtraction_overflow_in_longint');
         Halt;
       end;
       numerator := numerator - numerator_temp;
@@ -225,16 +215,9 @@ begin
       Halt;
     end;
 
-    // Debug
-//    WriteLn('Числитель(after1): ', numerator);
-//    WriteLn('Знаменатель(after1): ', denominator);
-
     // Сокращение дроби
     ReduceFraction(numerator, denominator);
-
-    // Debug
-//    WriteLn('Числитель(after2): ', numerator);
-//    WriteLn('Знаменатель(after2): ', denominator);
+    
 
     // Сброс состояния калькулятора
     status := 0;

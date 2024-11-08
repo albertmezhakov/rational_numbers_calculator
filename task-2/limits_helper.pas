@@ -51,7 +51,7 @@ begin
   // Наименьшее общее кратное через НОД с проверкой на переполнение
   if a > custom_types.MAX_LONGWORD div b then
   begin
-    WriteLn('Переполнение при вычислении НОК');
+    WriteLn('overflow_when_calculating_LCM');
     Halt;
   end;
   LCM := (a div GCD(a, b)) * b;
