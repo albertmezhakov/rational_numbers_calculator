@@ -9,11 +9,14 @@ unit arguments_helper;
 
 interface
 
-uses custom_types, sysutils;
+uses custom_types;
 
   function GetNumberSystems(): custom_types.number_system_t;
 
 implementation
+
+uses
+  sysutils;
 
 
 function GetNumberSystems(): custom_types.number_system_t;

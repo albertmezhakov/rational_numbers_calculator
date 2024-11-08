@@ -59,8 +59,8 @@ var
       Функция выполняет команду калькулятора, обрабатывая различные операции с дробями.
       Принимает символ ввода (input) и обновляет различные параметры состояния.
       В зависимости от команды (сложение, вычитание, умножение, деление)
-      выполняются соответствующие арифметические операции. Также функция 
-      проверяет переполнение и корректность ввода чисел. 
+      выполняются соответствующие арифметические операции. Также функция
+      проверяет переполнение и корректность ввода чисел.
       Возвращает новый статус, который отражает текущее состояние калькулятора.
 }
 begin
@@ -96,15 +96,15 @@ begin
     end;
 
     // Debug
-    WriteLn('Correct');
-    WriteLn('Команда: ', command);
-    WriteLn('СС: ', number_system);
-    WriteLn('Знак: ', sign);
-    WriteLn('Финальный статус: ', status);
-    WriteLn('Числитель(input): ', numerator_temp);
-    WriteLn('Знаменатель(input): ', denominator_temp);
-    WriteLn('Числитель: ', numerator);
-    WriteLn('Знаменатель: ', denominator);
+//    WriteLn('Correct');
+//    WriteLn('Команда: ', command);
+//    WriteLn('СС: ', number_system);
+//    WriteLn('Знак: ', sign);
+//    WriteLn('Финальный статус: ', status);
+//    WriteLn('Числитель(input): ', numerator_temp);
+//    WriteLn('Знаменатель(input): ', denominator_temp);
+//    WriteLn('Числитель: ', numerator);
+//    WriteLn('Знаменатель: ', denominator);
 
     // Проверка деления на ноль
     if denominator_temp = 0 then
@@ -226,15 +226,15 @@ begin
     end;
 
     // Debug
-    WriteLn('Числитель(after1): ', numerator);
-    WriteLn('Знаменатель(after1): ', denominator);
+//    WriteLn('Числитель(after1): ', numerator);
+//    WriteLn('Знаменатель(after1): ', denominator);
 
     // Сокращение дроби
     ReduceFraction(numerator, denominator);
 
     // Debug
-    WriteLn('Числитель(after2): ', numerator);
-    WriteLn('Знаменатель(after2): ', denominator);
+//    WriteLn('Числитель(after2): ', numerator);
+//    WriteLn('Знаменатель(after2): ', denominator);
 
     // Сброс состояния калькулятора
     status := 0;
@@ -247,7 +247,7 @@ begin
     numerator_temp := 0;
     denominator_temp := 1;
     comment := false;
-    
+
     exit(-3);
   end;
 

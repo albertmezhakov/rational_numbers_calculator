@@ -27,6 +27,7 @@ interface
 
 implementation
 
+uses custom_types;
 function GCD(a, b: longword): longword;
 {
   Алгоритм Евклида для нахождения наибольшего общего делителя (НОД)
@@ -43,14 +44,12 @@ begin
 end;
 
 function LCM(a, b: longword): longword;
-const
-  MAX_LONGWORD = 4294967295; // Максимальное значение для типа longword
 {
     Функция для нахождения наименьшего общего кратного (НОК)
 }
 begin
   // Наименьшее общее кратное через НОД с проверкой на переполнение
-  if a > MAX_LONGWORD div b then
+  if a > custom_types.MAX_LONGWORD div b then
   begin
     WriteLn('Переполнение при вычислении НОК');
     Halt;
@@ -59,9 +58,6 @@ begin
 end;
 
 function IsMultiplicationWithinLongIntLimits(a: longint; b: longword): boolean;
-const
-  MIN_LONGINT = -2147483648;  // Минимальное значение для longint
-  MAX_LONGINT = 2147483647;   // Максимальное значение для longint
 {
   Проверка переполнения при умножении longint и longword
 }
@@ -70,13 +66,13 @@ begin
   if (a = 0) or (b = 0) then
     Exit(true);
 
-  // Если `a` положительный, проверяем, чтобы результат не превышал MAX_LONGINT
+  // Если `a` положительный, проверяем, чтобы результат не превышал custom_types.MAX_LONGINT
   if a > 0 then
-    Exit(a <= MAX_LONGINT div longint(b));
+    Exit(a <= custom_types.MAX_LONGINT div longint(b));
 
-  // Если `a` отрицательный, проверяем, чтобы результат не был меньше MIN_LONGINT
+  // Если `a` отрицательный, проверяем, чтобы результат не был меньше custom_types.MIN_LONGINT
   if a < 0 then
-    Exit(a >= MIN_LONGINT div longint(b));
+    Exit(a >= custom_types.MIN_LONGINT div longint(b));
 
   // Если все проверки пройдены, переполнения нет
   IsMultiplicationWithinLongIntLimits := true;
@@ -84,9 +80,6 @@ end;
 
 
 function IsMultiplicationWithinLongWordLimits(a, b: longword): boolean;
-const
-  MAX_LONGWORD = 4294967295;  // Максимальное значение для longword
-
 {
   Проверка переполнения при умножении longword и longword
 }
@@ -95,8 +88,8 @@ begin
   if (a = 0) or (b = 0) then
     Exit(true);
 
-  // Проверяем, чтобы результат умножения не превышал MAX_LONGWORD
-  if a > MAX_LONGWORD div b then
+  // Проверяем, чтобы результат умножения не превышал custom_types.MAX_LONGWORD
+  if a > custom_types.MAX_LONGWORD div b then
     Exit(false);
 
   // Если проверка пройдена, переполнения нет
@@ -105,26 +98,23 @@ end;
 
 
 function IsWithinLongIntLimits(numerator: longint; number_system: integer; num: integer): boolean;
-const
-  MIN_LONGINT = -2147483648;  // Минимальное значение для longint
-  MAX_LONGINT = 2147483647;   // Максимальное значение для longint
 {
   Проверка переполнения для операций с longint (умножение и сложение)
 }
 begin
   // Проверка переполнения при умножении
-  if (numerator > 0) and (numerator > MAX_LONGINT div number_system) then
+  if (numerator > 0) and (numerator > custom_types.MAX_LONGINT div number_system) then
     exit(false)
-  else if (numerator < 0) and (numerator < MIN_LONGINT div number_system) then
+  else if (numerator < 0) and (numerator < custom_types.MIN_LONGINT div number_system) then
     exit(false);
 
   // Если произведение в пределах, можно выполнить умножение
   numerator := numerator * number_system;
 
   // Проверка переполнения при сложении
-  if (num > 0) and (numerator > MAX_LONGINT - num) then
+  if (num > 0) and (numerator > custom_types.MAX_LONGINT - num) then
     exit(false)
-  else if (num < 0) and (numerator < MIN_LONGINT - num) then
+  else if (num < 0) and (numerator < custom_types.MIN_LONGINT - num) then
     exit(false);
 
   // Если все проверки прошли, то переполнения не будет
@@ -133,21 +123,19 @@ end;
 
 
 function IsWithinLongWordLimits(denominator: longword; number_system: integer; num: integer): boolean;
-const
-  MAX_LONGWORD = 4294967295;  // Максимальное значение для longword
 {
   Проверка переполнения для операций с longword (умножение и сложение)
 }
 begin
   // Проверка переполнения при умножении
-  if (number_system > 0) and (denominator > MAX_LONGWORD div number_system) then
+  if (number_system > 0) and (denominator > custom_types.MAX_LONGWORD div number_system) then
     exit(false);
 
   // Если произведение в пределах, можно выполнить умножение
   denominator := denominator * number_system;
 
   // Проверка переполнения при сложении
-  if (num > 0) and (denominator > MAX_LONGWORD - num) then
+  if (num > 0) and (denominator > custom_types.MAX_LONGWORD - num) then
     exit(false);
 
   // Если все проверки прошли, то переполнения не будет
@@ -155,9 +143,6 @@ begin
 end;
 
 function IsAdditionWithinLongIntLimits(a: longint; b: longword): boolean;
-const
-  MIN_LONGINT = -2147483648;  // Минимальное значение для longint
-  MAX_LONGINT = 2147483647;   // Максимальное значение для longint
 {
   Проверка переполнения при сложении longint и longword
 }
@@ -166,22 +151,19 @@ begin
   if b = 0 then
     Exit(true);
 
-  // Если a положительное, проверяем, чтобы результат не превысил MAX_LONGINT
+  // Если a положительное, проверяем, чтобы результат не превысил custom_types.MAX_LONGINT
   if a > 0 then
-    Exit(a + b <= MAX_LONGINT);
+    Exit(a + b <= custom_types.MAX_LONGINT);
 
-  // Если a отрицательное, проверяем, чтобы результат не опустился ниже MIN_LONGINT
+  // Если a отрицательное, проверяем, чтобы результат не опустился ниже custom_types.MIN_LONGINT
   if a < 0 then
-    Exit(a + b >= MIN_LONGINT);
+    Exit(a + b >= custom_types.MIN_LONGINT);
 
   // Если a = 0, переполнение не может произойти, так как b не выходит за пределы longint
   IsAdditionWithinLongIntLimits := true;
 end;
 
 function IsSubtractionWithinLongIntLimits(a: longint; b: longword): boolean;
-const
-  MIN_LONGINT = -2147483648;  // Минимальное значение для longint
-  MAX_LONGINT = 2147483647;   // Максимальное значение для longint
 {
   Проверка переполнения при вычитании longint и longword
 }
@@ -190,13 +172,13 @@ begin
   if b = 0 then
     Exit(true);
 
-  // Если a положительное, проверяем, чтобы результат не стал меньше MIN_LONGINT
+  // Если a положительное, проверяем, чтобы результат не стал меньше custom_types.MIN_LONGINT
   if a > 0 then
-    Exit(a - b >= MIN_LONGINT);
+    Exit(a - b >= custom_types.MIN_LONGINT);
 
-  // Если a отрицательное, проверяем, чтобы результат не стал больше MAX_LONGINT
+  // Если a отрицательное, проверяем, чтобы результат не стал больше custom_types.MAX_LONGINT
   if a < 0 then
-    Exit(a - b <= MAX_LONGINT);
+    Exit(a - b <= custom_types.MAX_LONGINT);
 
   // Если a = 0, переполнение не может произойти, так как b не выходит за пределы longint
   IsSubtractionWithinLongIntLimits := true;
