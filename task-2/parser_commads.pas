@@ -1,18 +1,20 @@
 (*
  * Project: RationalNumbersCalculator
+ * Date: 27.10.2024
  * User: BerhtAdal
- * Date: 26.10.2024
+ * Email: berhtadal@gmail.com
+ * Telegram: https://t.me/BerhtAdal
  *)
-program TestReaderCommands;
-uses ParserHelper;
+program parser_commads;
+uses execute_helper, types, parser_helper;
 
 var
   input: char;
-  input_buffer: buffer_aray;
-  command: ParserHelper.command_type;
-  sign: ParserHelper.sign_type;
+  input_buffer: types.buffer_aray;
+  command: types.command_type;
+  sign: types.sign_type;
   number_system, status, pointer, finish_status: Integer;
-  numerator_first_num, denominator_first_num,comment: Boolean;
+  numerator_first_num, denominator_first_num, comment: Boolean;
   numerator: longint;
   denominator, numerator_temp, denominator_temp: longword;
 
@@ -50,7 +52,7 @@ begin
       4: status := InputSpaceAfterColomn(input);
       5: status := InputSignOrFirstNumbersNumerator(input, sign, numerator_first_num, input_buffer, numerator_temp, number_system, pointer);
       6: status := InputNumbersNumerator(input, numerator_first_num, input_buffer, numerator_temp, number_system, pointer);
-      7: status := InputNumbersDenominator(input, input_buffer, denominator_temp,denominator_first_num, number_system, pointer);
+      7: status := InputNumbersDenominator(input, input_buffer, denominator_temp, denominator_first_num, number_system, pointer);
     end;
 
 
