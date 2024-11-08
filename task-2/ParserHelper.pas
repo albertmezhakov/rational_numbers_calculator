@@ -39,10 +39,10 @@ type
 
 
   function InputNumbersNumerator(input: char; var numerator_first_num: Boolean; var input_buffer: buffer_aray;
-                                    var numerator: LongInt; var number_system, pointer: Integer): Integer;
+                                    var numerator: LongWord; var number_system, pointer: Integer): Integer;
 
   function InputSignOrFirstNumbersNumerator(input: char; var sign: sign_type; var numerator_first_num: Boolean;
-                                               var input_buffer: buffer_aray; var numerator: LongInt;
+                                               var input_buffer: buffer_aray; var numerator: LongWord;
                                                var number_system, pointer: Integer): Integer;
 
   function InputNumbersDenominator(input: char; var input_buffer: buffer_aray; var denominator: LongWord;
@@ -310,7 +310,7 @@ begin
   end;
 end;
 
-function InputNumbersNumerator(input: char; var numerator_first_num: Boolean; var input_buffer: buffer_aray; var numerator: LongInt; var number_system, pointer: Integer): Integer;
+function InputNumbersNumerator(input: char; var numerator_first_num: Boolean; var input_buffer: buffer_aray; var numerator: LongWord; var number_system, pointer: Integer): Integer;
 begin
 
   if (input = '/') and numerator_first_num then
@@ -354,7 +354,7 @@ begin
   InputNumbersNumerator := 6;
 end;
 
-function InputSignOrFirstNumbersNumerator(input: char; var sign: sign_type; var numerator_first_num: Boolean; var input_buffer: buffer_aray; var numerator: LongInt; var number_system, pointer: Integer): Integer;
+function InputSignOrFirstNumbersNumerator(input: char; var sign: sign_type; var numerator_first_num: Boolean; var input_buffer: buffer_aray; var numerator: LongWord; var number_system, pointer: Integer): Integer;
 begin
   if not ((('0' <= input) and (input <= '9')) or (('a' <= input) and (input <= 'f')) or (input = '+') or (input = '-')) then
   begin
