@@ -1,51 +1,72 @@
 (*
  * Project: RationalNumbersCalculator
- * User: BerhtAdal
  * Date: 26.10.2024
+ * User: BerhtAdal
+ * Email: berhtadal@gmail.com
+ * Telegram: https://t.me/BerhtAdal
  *)
 program main;
 uses  SysUtils;
 
 const
-  MAX_NUMBER_SYSTEM = 256;
+  MAX_NUMBER_SYSTEM = 256;  // Максимальное количество поддерживаемых систем счисления
+
 type
-  number_system_type = array[1..256] of Int16;
+  number_system_type = array[1..256] of Int16;  // Тип данных для хранения массивов систем счисления (до 256 уникальных значений)
+
 var
-  number_systems: number_system_type;
+  number_systems: number_system_type;  // Массив, в котором будут храниться переданные пользователем системы счисления
+
 
 procedure GetNumberSystems(var number_system_local: number_system_type);
 var
-  i, j: integer;
-  in_array: Boolean;
+  i, j: integer;  // Переменные для итерации по циклам
+  in_array: Boolean;  // Флаг для проверки, была ли уже добавлена система счисления
+{
+    Процедура для получения и обработки систем счисления из аргументов командной строки
+}
 begin
   {
-    Инициализируем массив с системами сячиления.
-    Считываем все счиления которые передаються в виде аргументов программы.
-    Записываем только уникальные системы счиления.
+    Инициализируем массив с системами счисления.
+    Считываем все системы счисления, которые передаются в виде аргументов программы.
+    Записываем только уникальные системы счисления.
   }
-  for i:=1 to MAX_NUMBER_SYSTEM do number_system_local[i] := -1;
-  for i:=1 to ParamCount do
+
+  // Инициализируем все элементы массива значением -1 (означает отсутствие значения)
+  for i := 1 to MAX_NUMBER_SYSTEM do
+    number_system_local[i] := -1;
+
+  // Обрабатываем каждый аргумент командной строки, начиная с первого
+  for i := 1 to ParamCount do
   begin
-    in_array := false;
-    for j:=1 to i do if number_system_local[j] = StrToInt(ParamStr(i)) then in_array := true;
+    in_array := false;  // Устанавливаем флаг, что система счисления еще не найдена в массиве
+
+    // Проверяем, не была ли эта система счисления уже добавлена в массив
+    for j := 1 to i do
+      if number_system_local[j] = StrToInt(ParamStr(i)) then
+        in_array := true;
+
+    // Если система счисления уже была добавлена, пропускаем этот аргумент
     if in_array then continue;
+
+    // Проверяем, что система счисления находится в допустимом диапазоне
     if (StrToInt(ParamStr(i)) > 1) and (StrToInt(ParamStr(i)) <= 256) then
-      number_system_local[i] := StrToInt(ParamStr(i))
+      number_system_local[i] := StrToInt(ParamStr(i))  // Добавляем систему счисления в массив
     else
     begin
-      WriteLn('Некоректная система счиления. Поддерживаються системы счисления от 2 до 256 включительно.');
-      exit;
+      WriteLn('Некорректная система счисления. Поддерживаются системы счисления от 2 до 256 включительно.');
+      exit;  // Завершаем программу, если введена некорректная система счисления
     end;
   end;
+
+  // Если не было передано ни одного аргумента, выводим сообщение об ошибке
   if ParamCount = 0 then
   begin
-    WriteLn('Нужно ввести минимум 1 систему счиления. ');
-    exit
+    WriteLn('Нужно ввести минимум 1 систему счисления.');
+    exit;  // Завершаем программу
   end;
 end;
 
 begin
   GetNumberSystems(number_systems);
-  
 end.
-

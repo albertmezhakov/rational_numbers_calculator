@@ -6,57 +6,72 @@
  * Telegram: https://t.me/BerhtAdal
  *)
 program parser_commads;
-uses execute_helper, types, parser_helper;
+uses execute_helper, custom_types, parser_helper;
 
 var
-  input: char;
-  input_buffer: types.buffer_aray;
-  command: types.command_type;
-  sign: types.sign_type;
-  number_system, status, pointer, finish_status: Integer;
-  numerator_first_num, denominator_first_num, comment: Boolean;
-  numerator: longint;
-  denominator, numerator_temp, denominator_temp: longword;
+  input: char;  // Переменная для хранения текущего символа, введенного пользователем
+  input_buffer: custom_types.buffer_array_t;  // Буфер для хранения введенных символов
+  command: custom_types.command_t;  // Команда
+  sign: custom_types.sign_t;  // Знак чисел (например, + или -)
+  status: custom_types.status_t;  // Текущий статус выполнения программы
+  finish_status: custom_types.finish_status_t;  // Статус завершения программы
+  number_system: Word;  // Система счисления (например, 16 для шестнадцатиричной)
+  pointer: Integer;  // Указатель на текущую позицию в буфере
+  numerator_first_num, denominator_first_num, comment: Boolean;  // Флаги, помечающие различные состояния
+  numerator: longint;  // Числитель
+  denominator, numerator_temp, denominator_temp: longword;  // Знаменатель и временные переменные для числителя и знаменателя
 
 begin
+  // Инициализация начальных значений
   status := 0;
   command := 0;
-  number_system := 0;
-  sign := 0;
-  pointer := 1;
-  numerator_first_num := true;
-  denominator_first_num := true;
-  numerator := 0;
-  denominator := 1;
-  numerator_temp := 0;
-  denominator_temp := 1;
   finish_status := 0;
-  comment := false;
+  sign := 0;
+
+  number_system := 0;
+  pointer := 1;
+
+  numerator_first_num := true;  // Флаг для отслеживания первого числа числителя
+  denominator_first_num := true;  // Флаг для отслеживания первого числа знаменателя
+
+  numerator := 0;  // Начальный числитель
+  denominator := 1;  // Начальный знаменатель (не может быть 0)
+  numerator_temp := 0;  // Переменная куда записываеться числителя введен с консоли
+  denominator_temp := 1;  // Переменная куда записываеться знаментаель введен с консоли
+
+  comment := false;  // Флаг для определения, находится ли программа в состоянии комментария
   while true do
   begin
-    Read(input);
-    status := ExecuteCommand(input, numerator_first_num, sign, comment,
+    Read(input);  // Чтение ввода от пользователя (один символ за раз)
+
+    // Обработка команды и обновление статуса
+    status := ExecuteCommand(input, numerator_first_num, denominator_first_num, sign, comment,
                               number_system, pointer, status, command,
-                              numerator_temp, numerator, denominator_temp, denominator);
+                              numerator_temp, numerator, denominator_temp,
+                              denominator);
+
+    // Проверка на завершение программы
     status := CheckFihish(input, status, finish_status);
+
+    // Проверка, если текущий символ является частью комментария, пропускаем его
     if CheckHaveComment(input, comment) then continue;
 
+    // В зависимости от текущего статуса, вызываем соответствующие функции
     case status of
-      -10: break;
-      -3: status := 0;
-      -1: continue;
-      0: status := InputCommandSymbol(input, command);
-      1: status := InputSpaceAfterCommand(input);
-      2: status := InputFirstSymbolsNumberSystems(input, number_system);
-      3: status := InputSymbolsNumberSystems(input, number_system);
-      4: status := InputSpaceAfterColomn(input);
-      5: status := InputSignOrFirstNumbersNumerator(input, sign, numerator_first_num, input_buffer, numerator_temp, number_system, pointer);
-      6: status := InputNumbersNumerator(input, numerator_first_num, input_buffer, numerator_temp, number_system, pointer);
-      7: status := InputNumbersDenominator(input, input_buffer, denominator_temp, denominator_first_num, number_system, pointer);
+      -3: status := 0;  // Статус -3: сброс состояния
+      -2: break;  // Статус -2: завершение программы
+      -1: continue;  // Статус -1: продолжение обработки (пропустить текущий символ)
+
+        // Основные этапы обработки ввода:
+      0: status := InputCommandSymbol(input, command);  // Обработка символа команды (например, +, -, *, /)
+      1: status := InputSpaceAfterCommand(input);  // Ожидание пробела после команды
+      2: status := InputFirstSymbolsNumberSystems(input, number_system);  // Обработка первого символа системы счисления
+      3: status := InputSymbolsNumberSystems(input, number_system);  // Обработка символов системы счисления
+      4: status := InputSpaceAfterColomn(input);  // Ожидание пробела после двоеточия
+      5: status := InputSignOrFirstNumbersNumerator(input, sign, numerator_first_num, input_buffer, numerator_temp, number_system, pointer);  // Ввод знака или чисел числителя
+      6: status := InputNumbersNumerator(input, numerator_first_num, input_buffer, numerator_temp, number_system, pointer);  // Ввод чисел числителя
+      7: status := InputNumbersDenominator(input, input_buffer, denominator_temp, denominator_first_num, number_system, pointer);  // Ввод чисел знаменателя
     end;
-
-
-  end;
-
+  end
 
 end.
