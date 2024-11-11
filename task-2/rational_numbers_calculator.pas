@@ -83,12 +83,10 @@ begin
     end;
   end;
   WriteLn('=========================================');
-  WriteLn(numerator);
-  WriteLn(denominator);
   for i:=1 to MAX_NUMBER_SYSTEM do
   begin
     if number_system_array[i] = -1 then continue;
     WriteNumeratorDenominatorToBase(numerator, denominator, number_system_array[i]);
   end;
-
+  
 end.

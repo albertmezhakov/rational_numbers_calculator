@@ -21,7 +21,7 @@ uses custom_types;
   function ConvertCharNumberToInteger(number: char): Integer;
 
   function CovertNumberToInteger(var input_buffer: custom_types.buffer_array_t;
-                                    number_system: Word): custom_types.status_t;
+                                    number_system: Word): Integer;
 
   function InputCommandSymbol(input: char;
                                  var command: custom_types.command_t
@@ -242,7 +242,7 @@ begin
   end;
 end;
 
-function CovertNumberToInteger(var input_buffer: custom_types.buffer_array_t; number_system: Word): custom_types.status_t;
+function CovertNumberToInteger(var input_buffer: custom_types.buffer_array_t; number_system: Word): Integer;
 var
   number: Integer;
 {
@@ -255,9 +255,9 @@ var
     number_system - система счисления, в которой ожидается число (до 256).
 }
 begin
-  // Конвертируем два символа в число. Первый символ умножается на 15, второй — просто добавляется.
-  // 15 - максимально колличество значаний которое кодирует 1 символ
-  number := ConvertCharNumberToInteger(input_buffer[1]) * 15 + ConvertCharNumberToInteger(input_buffer[2]);
+  // Конвертируем два символа в число. Первый символ умножается на 16, второй — просто добавляется.
+  // 16 - максимально колличество значаний которое кодирует 1 символ
+  number := ConvertCharNumberToInteger(input_buffer[1]) * 16 + ConvertCharNumberToInteger(input_buffer[2]);
 
   // Проверка, что число не больше или равно системе счисления.
   if number >= number_system then
@@ -676,7 +676,7 @@ begin
     // Проверка, чтобы число не выходило за пределы LongWord.
     if not IsWithinLongWordLimits(denominator, number_system, CovertNumberToInteger(input_buffer, number_system)) then
     begin
-      WriteLn('limit_longint');  // Ошибка: число выходит за пределы LongWord.
+      WriteLn('limit_longword');  // Ошибка: число выходит за пределы LongWord.
       Halt;  // Завершаем выполнение программы.
     end;
 
