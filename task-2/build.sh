@@ -1,0 +1,2 @@
+fpc rational_numbers_calculator.pas
+pause
