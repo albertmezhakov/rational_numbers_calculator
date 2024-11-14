@@ -47,9 +47,6 @@ begin
 
   number_system_array := GetNumberSystems();
 
-
-  WriteLn('=========================================');
-
   while true do
   begin
     Read(input);  // Чтение ввода от пользователя (один символ за раз)
@@ -82,7 +79,6 @@ begin
       7: status := InputNumbersDenominator(input, input_buffer, denominator_temp, denominator_first_num, number_system, pointer);  // Ввод чисел знаменателя
     end;
   end;
-  WriteLn('=========================================');
   for i:=1 to MAX_NUMBER_SYSTEM do
   begin
     if number_system_array[i] = -1 then continue;
