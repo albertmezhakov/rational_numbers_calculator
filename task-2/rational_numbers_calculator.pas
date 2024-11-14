@@ -84,5 +84,5 @@ begin
     if number_system_array[i] = -1 then continue;
     WriteNumeratorDenominatorToBase(numerator, denominator, number_system_array[i]);
   end;
-  
+
 end.

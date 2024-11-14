@@ -28,10 +28,10 @@ interface
 implementation
 
 uses custom_types;
-function GCD(a, b: longword): longword;
 {
   Алгоритм Евклида для нахождения наибольшего общего делителя (НОД)
 }
+function GCD(a, b: longword): longword;
 begin
   while b <> 0 do
   begin
@@ -43,10 +43,10 @@ begin
   GCD := a; // Возвращаем НОД
 end;
 
-function LCM(a, b: longword): longword;
 {
-    Функция для нахождения наименьшего общего кратного (НОК)
+  Функция для нахождения наименьшего общего кратного (НОК)
 }
+function LCM(a, b: longword): longword;
 begin
   // Наименьшее общее кратное через НОД с проверкой на переполнение
   if a > custom_types.MAX_LONGWORD div b then
@@ -57,10 +57,10 @@ begin
   LCM := (a div GCD(a, b)) * b;
 end;
 
-function IsMultiplicationWithinLongIntLimits(a: longint; b: longword): boolean;
 {
   Проверка переполнения при умножении longint и longword
 }
+function IsMultiplicationWithinLongIntLimits(a: longint; b: longword): boolean;
 begin
   // Если одно из чисел равно нулю, то переполнения не будет
   if (a = 0) or (b = 0) then
@@ -78,11 +78,10 @@ begin
   IsMultiplicationWithinLongIntLimits := true;
 end;
 
-
-function IsMultiplicationWithinLongWordLimits(a, b: longword): boolean;
 {
   Проверка переполнения при умножении longword и longword
 }
+function IsMultiplicationWithinLongWordLimits(a, b: longword): boolean;
 begin
   // Если одно из чисел равно нулю, то переполнения не будет
   if (a = 0) or (b = 0) then
@@ -96,11 +95,10 @@ begin
   IsMultiplicationWithinLongWordLimits := true;
 end;
 
-
-function IsWithinLongIntLimits(numerator: longint; number_system: integer; num: integer): boolean;
 {
   Проверка переполнения для операций с longint (умножение и сложение)
 }
+function IsWithinLongIntLimits(numerator: longint; number_system: integer; num: integer): boolean;
 begin
   // Проверка переполнения при умножении
   if (numerator > 0) and (numerator > custom_types.MAX_LONGINT div number_system) then
@@ -121,11 +119,10 @@ begin
   IsWithinLongIntLimits := true;
 end;
 
-
-function IsWithinLongWordLimits(denominator: longword; number_system: integer; num: integer): boolean;
 {
   Проверка переполнения для операций с longword (умножение и сложение)
 }
+function IsWithinLongWordLimits(denominator: longword; number_system: integer; num: integer): boolean;
 begin
   // Проверка переполнения при умножении
   if (number_system > 0) and (denominator > custom_types.MAX_LONGWORD div number_system) then
@@ -142,10 +139,10 @@ begin
   IsWithinLongWordLimits := true;
 end;
 
-function IsAdditionWithinLongIntLimits(a: longint; b: longword): boolean;
 {
-  Проверка переполнения при сложении longint и longword
+    Проверка переполнения при сложении longint и longword
 }
+function IsAdditionWithinLongIntLimits(a: longint; b: longword): boolean;
 begin
   // Если b = 0, переполнение не может произойти
   if b = 0 then
@@ -163,10 +160,10 @@ begin
   IsAdditionWithinLongIntLimits := true;
 end;
 
-function IsSubtractionWithinLongIntLimits(a: longint; b: longword): boolean;
 {
   Проверка переполнения при вычитании longint и longword
 }
+function IsSubtractionWithinLongIntLimits(a: longint; b: longword): boolean;
 begin
   // Если b = 0, переполнение не может произойти
   if b = 0 then

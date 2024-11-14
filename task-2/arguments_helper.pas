@@ -18,15 +18,14 @@ implementation
 uses
   sysutils;
 
-
+{
+    ѕроцедура дл€ получени€ и обработки систем счислени€ из аргументов командной строки
+}
 function GetNumberSystems(): custom_types.number_system_t;
 var
   i, j: integer;  // ѕеременные дл€ итерации по циклам
   in_array: Boolean;  // ‘лаг дл€ проверки, была ли уже добавлена система счислени€
   number_system_local: custom_types.number_system_t;
-{
-    ѕроцедура дл€ получени€ и обработки систем счислени€ из аргументов командной строки
-}
 begin
   {
     »нициализируем массив с системами счислени€.

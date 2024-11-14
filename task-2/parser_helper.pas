@@ -68,10 +68,6 @@ implementation
 
 uses limits_helper, sysutils;
 
-
-function CheckFihish(input: char; var status: custom_types.status_t;
-                        var finish_status: custom_types.finish_status_t
-                      ): custom_types.status_t;
 {
  Функция для проверки корректности ввода команды "finish" и для отслеживания
  начада ввода этой команды.
@@ -91,6 +87,9 @@ function CheckFihish(input: char; var status: custom_types.status_t;
    status - если команда не была введена и начался ввод команды
                                                       калькулятора( + 10: ...)
 }
+function CheckFihish(input: char; var status: custom_types.status_t;
+                        var finish_status: custom_types.finish_status_t
+                      ): custom_types.status_t;
 begin
   {
     Если статус равен 0 или -1, это означает, что команда "finish" может быть введена.
@@ -172,7 +171,6 @@ begin
   end;
 end;
 
-function CheckHaveComment(input: char; var comment: Boolean): Boolean;
 {
   Функция для проверки наличия комментария в строке
   Эта функция проверяет символ на наличие начала комментария (символ '#').
@@ -184,6 +182,7 @@ function CheckHaveComment(input: char; var comment: Boolean): Boolean;
   input - символ, который пользователь вводит в консоль.
   comment - флаг означающий, что комментарий уже начался
 }
+function CheckHaveComment(input: char; var comment: Boolean): Boolean;
 begin
   {
     Если флаг comment уже установлен в true, это означает, что комментарий
@@ -210,7 +209,6 @@ begin
     CheckHaveComment := false;
 end;
 
-function ConvertCharNumberToInteger(number: char): Integer;
 {
    Функция для преобразования символа, представляющего цифру в шестнадцатеричной
    системе, в целое число. Функция поддерживает символы от '0' до '9' и 
@@ -221,6 +219,7 @@ function ConvertCharNumberToInteger(number: char): Integer;
          функции LowerCase, что позволяет обрабатывать как заглавные,
                                                           так и строчные буквы.
 }
+function ConvertCharNumberToInteger(number: char): Integer;
 begin
   case LowerCase(number) of
     '0': ConvertCharNumberToInteger := 0;
@@ -242,9 +241,6 @@ begin
   end;
 end;
 
-function CovertNumberToInteger(var input_buffer: custom_types.buffer_array_t; number_system: Word): Integer;
-var
-  number: Integer;
 {
     Функция для конвертации двух символов, кодирующих цифру в системе счисления,
     в целое число в 10 системе счиления. Функция проверяет, что число не 
@@ -254,6 +250,9 @@ var
                     системе счисления.
     number_system - система счисления, в которой ожидается число (до 256).
 }
+function CovertNumberToInteger(var input_buffer: custom_types.buffer_array_t; number_system: Word): Integer;
+var
+  number: Integer;
 begin
   // Конвертируем два символа в число. Первый символ умножается на 16, второй — просто добавляется.
   // 16 - максимально колличество значаний которое кодирует 1 символ
@@ -271,7 +270,6 @@ begin
   CovertNumberToInteger := number;
 end;
 
-function InputCommandSymbol(input: char; var command: custom_types.command_t): custom_types.status_t;
 {
     Функция для обработки ввода символа команды калькулятора. 
     Эта функция обрабатывает символ операции (+, -, *, /), присваивает
@@ -296,6 +294,7 @@ function InputCommandSymbol(input: char; var command: custom_types.command_t): c
         В случае ошибки (например, если введена цифра или нераспознанный символ),
           выводится сообщение об ошибке и программа завершается.
 }
+function InputCommandSymbol(input: char; var command: custom_types.command_t): custom_types.status_t;
 begin
   // Если введен пробел, то ничего не делаем и выходим с кодом 0
   if input = ' ' then exit(0);
@@ -325,7 +324,6 @@ begin
   InputCommandSymbol := 1;
 end;
 
-function InputSpaceAfterCommand(input: char): custom_types.status_t;
 {
     Функция для проверки наличия пробела после ввода команды калькулятора. 
     Эта функция проверяет, был ли введен пробел сразу после символа операции.
@@ -338,6 +336,7 @@ function InputSpaceAfterCommand(input: char): custom_types.status_t;
         В случае ошибки (если пробела нет после операции), выводится сообщение 
               об ошибке, и программа завершается.
 }
+function InputSpaceAfterCommand(input: char): custom_types.status_t;
 begin
   // Если введен пробел, возвращаем код 2, что означает, что пробел после операции найден.
   if input = ' ' then
@@ -352,7 +351,6 @@ begin
   end;
 end;
 
-function InputFirstSymbolsNumberSystems(input: char; var number_system: Word): custom_types.status_t;
 {
     Функция для обработки первого символа, введенного для системы счисления.
     Эта функция проверяет, является ли введенный символ допустимым для
@@ -371,6 +369,7 @@ function InputFirstSymbolsNumberSystems(input: char; var number_system: Word): c
         В случае ошибки (например, если символ не цифра или двоеточие), 
                           выводится сообщение об ошибке и программа завершится.
 }
+function InputFirstSymbolsNumberSystems(input: char; var number_system: Word): custom_types.status_t;
 begin
   // Если введен пробел, то ничего не делаем и выходим с кодом 2
   if input = ' ' then exit(2);
@@ -396,7 +395,6 @@ begin
   InputSymbolsNumberSystems(input, number_system);
 end;
 
-function InputSymbolsNumberSystems(input: char; var number_system: Word): custom_types.status_t;
 {
     Функция для обработки символов, представляющих число системы счисления.
     Эта функция обновляет систему счисления (number_system) на основе введенных
@@ -413,6 +411,7 @@ function InputSymbolsNumberSystems(input: char; var number_system: Word): custom
         В случае ошибки (например, если введено недопустимое число или символ), 
                     выводится соответствующее сообщение, и программа завершится.
 }
+function InputSymbolsNumberSystems(input: char; var number_system: Word): custom_types.status_t;
 begin
   // Если введен пробел, выводим ошибку "missing_colomn"
   if input = ' ' then
@@ -453,7 +452,6 @@ begin
   end;
 end;
 
-function InputSpaceAfterColomn(input: char): custom_types.status_t;
 {
     Функция для проверки наличия пробела после двоеточия, который требуется 
     для корректного ввода данных. Если после двоеточия введен пробел, функция 
@@ -467,6 +465,7 @@ function InputSpaceAfterColomn(input: char): custom_types.status_t;
         В случае ошибки (если нет пробела), программа выводит 
                          сообщение о недостающем пробеле и завершает выполнение.
 }
+function InputSpaceAfterColomn(input: char): custom_types.status_t;
 begin
   // Проверяем, что после двоеточия введен пробел.
   if input = ' ' then
@@ -482,10 +481,6 @@ begin
   end;
 end;
 
-function InputNumbersNumerator(input: char; var numerator_first_num: Boolean;
-                               var input_buffer: custom_types.buffer_array_t;
-                               var numerator: LongWord; var number_system: word;
-                               var pointer: Integer): custom_types.status_t;
 {
     Функция для обработки ввода чисел (числителя) в калькуляторе.
     Она проверяет корректность ввода чисел для числителя, учитывая разные
@@ -503,6 +498,10 @@ function InputNumbersNumerator(input: char; var numerator_first_num: Boolean;
         7 - если закончен ввод числителя и начинаем ввод знаменателя
         В случае ошибки программа выводит сообщения и завершает выполнение.
 }
+function InputNumbersNumerator(input: char; var numerator_first_num: Boolean;
+                                  var input_buffer: custom_types.buffer_array_t;
+                                  var numerator: LongWord; var number_system: word;
+                                  var pointer: Integer): custom_types.status_t;
 begin
   // Проверка на ошибку: если введен символ '/' и это первый ввод числителя, то выводится ошибка.
   if (input = '/') and numerator_first_num then
@@ -565,13 +564,6 @@ begin
   InputNumbersNumerator := 6;
 end;
 
-function InputSignOrFirstNumbersNumerator(input: char;
-                                          var sign: custom_types.sign_t;
-                                          var numerator_first_num: Boolean;
-                                          var input_buffer: custom_types.buffer_array_t;
-                                          var numerator: LongWord; 
-                                          var number_system: Word;
-                                          var pointer: Integer): custom_types.status_t;
 {
     Функция для обработки ввода знака или первого числа числителя.
     Она проверяет корректность символа, который ввел пользователь, и в 
@@ -588,6 +580,13 @@ function InputSignOrFirstNumbersNumerator(input: char;
     Функция возвращает:
         6 - успешная обработка символа, продолжение ввода числителя.
 }
+function InputSignOrFirstNumbersNumerator(input: char;
+                                             var sign: custom_types.sign_t;
+                                             var numerator_first_num: Boolean;
+                                             var input_buffer: custom_types.buffer_array_t;
+                                             var numerator: LongWord;
+                                             var number_system: Word;
+                                             var pointer: Integer): custom_types.status_t;
 begin
   // Проверка на недопустимый символ (кроме цифр, букв 'a'..'f', знаков '+' и '-').
   if not ((('0' <= input) and (input <= '9')) or (('a' <= input) and (input <= 'f')) or (input = '+') or (input = '-')) then
@@ -631,8 +630,6 @@ begin
   end;
 end;
 
-
-function InputNumbersDenominator(input: char; var input_buffer: custom_types.buffer_array_t; var denominator: LongWord; var denominator_first_num: Boolean; var number_system: Word; var pointer: Integer): custom_types.status_t;
 {
     Функция для обработки ввода чисел знаменателя. Эта функция обрабатывает ввод
     символов для числителя в зависимости от состояния указателя и текущего 
@@ -648,6 +645,12 @@ function InputNumbersDenominator(input: char; var input_buffer: custom_types.buf
     Функция возвращает:
         7 - успешная обработка символа и продолжение ввода.
 }
+function InputNumbersDenominator(input: char;
+                                    var input_buffer: custom_types.buffer_array_t;
+                                    var denominator: LongWord;
+                                    var denominator_first_num: Boolean;
+                                    var number_system: Word;
+                                    var pointer: Integer): custom_types.status_t;
 begin
   // Если указатель на вторую позицию и введен пробел, выводим ошибку.
   if (pointer = 2) and (input = ' ') then

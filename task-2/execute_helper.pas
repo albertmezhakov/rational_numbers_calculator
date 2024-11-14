@@ -14,9 +14,17 @@ uses custom_types;
   procedure ReduceFraction(var num: longint; var den: longword);
 
 
-  function ExecuteCommand(input: char; var numerator_first_num: Boolean;var denominator_first_num: Boolean; var sign: custom_types.sign_t; var comment: Boolean;
-                             var number_system: Word; var pointer: Integer; var status: custom_types.status_t; var command: custom_types.command_t;
-                             var numerator_temp: LongWord; var numerator: LongInt; var denominator_temp: LongWord;
+  function ExecuteCommand(input: char; var numerator_first_num: Boolean;
+                             var denominator_first_num: Boolean;
+                             var sign: custom_types.sign_t;
+                             var comment: Boolean;
+                             var number_system: Word;
+                             var pointer: Integer;
+                             var status: custom_types.status_t;
+                             var command: custom_types.command_t;
+                             var numerator_temp: LongWord;
+                             var numerator: LongInt;
+                             var denominator_temp: LongWord;
                              var denominator: LongWord): custom_types.status_t;
 
 
@@ -24,16 +32,18 @@ implementation
 
 uses limits_helper;
 
-procedure ReduceFraction(var num: longint; var den: longword);
-var
-  gcd_result: longword;
+
 {
-    Процедура сокращает дробь, используя наибольший общий делитель (НОД) числителя и знаменателя.
+    Процедура сокращает дробь, используя наибольший общий делитель (НОД)
+    числителя и знаменателя.
     Принимает два параметра:
       - num: числитель дроби (longint)
       - den: знаменатель дроби (longword)
     После выполнения числитель и знаменатель возвращаются в виде сокращенной дроби.
 }
+procedure ReduceFraction(var num: longint; var den: longword);
+var
+  gcd_result: longword;
 begin
   // Находим НОД числителя и знаменателя
   gcd_result := GCD(abs(num), den);
@@ -48,13 +58,6 @@ begin
     den := den div gcd_result;
   end;
 end;
-
-function ExecuteCommand(input: char; var numerator_first_num: Boolean; var denominator_first_num:Boolean; var sign: custom_types.sign_t; var comment: Boolean;
-                           var number_system: Word; var pointer: Integer; var status: custom_types.status_t; var command: custom_types.command_t;
-                           var numerator_temp: LongWord; var numerator: LongInt; var denominator_temp: LongWord;
-                           var denominator: LongWord): custom_types.status_t;
-var
-  commonDen: longword;
 {
       Функция выполняет команду калькулятора, обрабатывая различные операции с дробями.
       Принимает символ ввода (input) и обновляет различные параметры состояния.
@@ -63,6 +66,21 @@ var
       проверяет переполнение и корректность ввода чисел.
       Возвращает новый статус, который отражает текущее состояние калькулятора.
 }
+function ExecuteCommand(input: char;
+                           var numerator_first_num: Boolean;
+                           var denominator_first_num: Boolean;
+                           var sign: custom_types.sign_t;
+                           var comment: Boolean;
+                           var number_system: Word;
+                           var pointer: Integer;
+                           var status: custom_types.status_t;
+                           var command: custom_types.command_t;
+                           var numerator_temp: LongWord;
+                           var numerator: LongInt;
+                           var denominator_temp: LongWord;
+                           var denominator: LongWord): custom_types.status_t;
+var
+  commonDen: longword;
 begin
   if (ord(input) = 13) or (ord(input) = 10) then
   begin
@@ -94,7 +112,7 @@ begin
       WriteLn('incorect_number(denominator)');
       Halt;
     end;
-    
+
 
     // Проверка деления на ноль
     if denominator_temp = 0 then
@@ -217,7 +235,7 @@ begin
 
     // Сокращение дроби
     ReduceFraction(numerator, denominator);
-    
+
 
     // Сброс состояния калькулятора
     status := 0;

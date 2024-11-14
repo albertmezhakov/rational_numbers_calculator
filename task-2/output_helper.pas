@@ -19,12 +19,11 @@ interface
 
 implementation
 
-
-function ConvertNumberToChar(number: Integer): Char;
 {
     ‘ункци€ ConvertNumberToChar преобразует число от 0 до 15 в символ
     дл€ представлени€ в системах счислени€ с основанием до 16.
 }
+function ConvertNumberToChar(number: Integer): Char;
 begin
   case number of
     0: ConvertNumberToChar := '0';
@@ -46,12 +45,11 @@ begin
   end;
 end;
 
-
-procedure ConvertFrom10ToBase(numerator: longword; base: Word);
 {
    ѕроцедура ConvertFrom10ToBase рекурсивно преобразует число из дес€тичной системы
    в систему счислени€ с основанием base, вывод€ результат в виде последовательности символов.
 }
+procedure ConvertFrom10ToBase(numerator: longword; base: Word);
 begin
   if numerator < base then
   begin
@@ -70,12 +68,11 @@ begin
   Write(' ');
 end;
 
-
-procedure WriteNumeratorDenominatorToBase(numerator: LongInt; denominator: longword; base: Word);
 {
    ѕроцедура WriteNumeratorDenominatorToBase выводит числитель и знаменатель
    в заданной системе счислени€, учитыва€ формат и разр€дность.
 }
+procedure WriteNumeratorDenominatorToBase(numerator: LongInt; denominator: longword; base: Word);
 begin
   // ¬ыводим основание системы счислени€
   Write(base);
